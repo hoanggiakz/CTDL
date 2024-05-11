@@ -1,0 +1,143 @@
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def insert(root, value):
+    if root is None:
+        return TreeNode(value)
+    if value < root.value:
+        root.left = insert(root.left, value)
+    elif value > root.value:
+        root.right = insert(root.right, value)
+    return root
+
+def inorder_traversal(root):
+    if root is not None:
+        inorder_traversal(root.left)
+        print(root.value, end=" ")
+        inorder_traversal(root.right)
+
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+def count_primes(root):
+    count = 0
+    if root is not None:
+        if is_prime(root.value):
+            count += 1
+        count += count_primes(root.left)
+        count += count_primes(root.right)
+    return count
+
+def sum_even_nodes(root):
+    sum_val = 0
+    if root is not None:
+        if root.value % 2 == 0:
+            sum_val += root.value
+        sum_val += sum_even_nodes(root.left)
+        sum_val += sum_even_nodes(root.right)
+    return sum_val
+
+def find_min_node(root):
+    if root is None or root.left is None:
+        return root.value
+    return find_min_node(root.left)
+
+def count_odd_nodes(root):
+    count = 0
+    if root is not None:
+        if root.value % 2 != 0:
+            count += 1
+        count += count_odd_nodes(root.left)
+        count += count_odd_nodes(root.right)
+    return count
+
+def search_node(root, value):
+    if root is None or root.value == value:
+        return root
+    if root.value < value:
+        return search_node(root.right, value)
+    return search_node(root.left, value)
+
+def delete_node(root, value):
+    if root is None:
+        return root
+    if value < root.value:
+        root.left = delete_node(root.left, value)
+    elif value > root.value:
+        root.right = delete_node(root.right, value)
+    else:
+        if root.left is None:
+            temp = root.right
+            root = None
+            return temp
+        elif root.right is None:
+            temp = root.left
+            root = None
+            return temp
+        temp = find_min_node(root.right)
+        root.value = temp
+        root.right = delete_node(root.right, temp)
+    return root
+
+def main():
+    ds = [20, 15, 30, 13, 17, 25, 51]
+    root = None
+    for value in ds:
+        root = insert(root, value)
+
+    while True:
+        print("\nMENU:")
+        print("1. Duyệt cây theo LNR")
+        print("2. Đếm số lượng node là số nguyên tố của cây")
+        print("3. Tính tổng giá trị các node chẵn của cây")
+        print("4. Tìm node nhỏ nhất của cây")
+        print("5. Đếm số node lẻ của cây")
+        print("6. Tìm node có giá trị do người dùng nhập")
+        print("7. Xoá một node có giá trị do người dùng nhập")
+        print("8. Thoát")
+        choice = int(input("Chọn chức năng (1-8): "))
+
+        if choice == 1:
+            print("Duyệt cây theo LNR:")
+            inorder_traversal(root)
+        elif choice == 2:
+            print("Số lượng node là số nguyên tố của cây:", count_primes(root))
+        elif choice == 3:
+            print("Tổng giá trị các node chẵn của cây:", sum_even_nodes(root))
+        elif choice == 4:
+            print("Node nhỏ nhất của cây:", find_min_node(root))
+        elif choice == 5:
+            print("Số node lẻ của cây:", count_odd_nodes(root))
+        elif choice == 6:
+            search_val = int(input("Nhập giá trị cần tìm: "))
+            found_node = search_node(root, search_val)
+            if found_node:
+                print("Node có giá trị", search_val, "được tìm thấy trong cây.")
+            else:
+                print("Node có giá trị", search_val, "không tồn tại trong cây.")
+        elif choice == 7:
+            del_val = int(input("Nhập giá trị cần xoá: "))
+            root = delete_node(root, del_val)
+            print("Node có giá trị", del_val, "đã được xoá khỏi cây.")
+        elif choice == 8:
+            print("Kết thúc chương trình.")
+            break
+        else:
+            print("Lựa chọn không hợp lệ. Vui lòng chọn lại.")
+            
+if __name__ == "__main__":
+    main()
